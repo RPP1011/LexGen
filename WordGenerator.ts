@@ -8,8 +8,8 @@ function randomInRange(min: number, max: number) {
 
 function generateSyllable(position: number, consonants: string[], vowels: string[], sounds: string[]) {
     let result: string = "";
-    let val: number = Math.floor(Math.random() * (3 - 0 + 1)) + 0;
-    let consonant: number = Math.floor(Math.random() * (consonants.length - 0 + 1)) + 0;
+    let val: number = randomInRange(0,3);
+    let consonant: number = randomInRange(0, consonants.length);
     if (position == 1) result += val < 2 ? consonants[consonant] : "";
     else result += consonant;
 
@@ -18,7 +18,7 @@ function generateSyllable(position: number, consonants: string[], vowels: string
 
     result += vowels[vowel];
     result += Math.random() < 0.5 ? sounds[sound] : "";
-    return result;
+    return result === undefined ? "" : result;
 }
 
 function printable(words: string[]) {
@@ -49,43 +49,54 @@ function getSelectValues(select) {
     return result;
 }
 
-const form: HTMLFormElement = document.querySelector('#selection');
-const outputBox: HTMLFormElement = document.querySelector('#outputBox');
+window.onload = () => {
+    const outputBox:HTMLElement = document.getElementById('outputBox');
+    const form:HTMLElement = document.getElementById('selection');
+    console.log(form);
 
-form.onsubmit = () => {
-    const formData = new FormData(form);
+    form.onsubmit = () => {
+    const formData = new FormData(form as HTMLFormElement);
 
-    const vowels = getSelectValues(document.querySelector('#vowels')) as string[];
-    const consonants = getSelectValues(document.querySelector('#consonants')) as string[];
-    const sounds = getSelectValues(document.querySelector('#sounds')) as string[];
+    const vowels = getSelectValues(document.getElementById('vowels')) as string[];
+    const consonants = getSelectValues(document.getElementById('consonants')) as string[];
+    const sounds = getSelectValues(document.getElementById('sounds')) as string[];
     const count = formData.get("word_count") as string;
     const maxSyllables = formData.get("max") as string;
     const minSyllables = formData.get("min") as string;
-
-    const words = generateWords(Number.parseInt(count),
-        Number.parseInt(minSyllables),
-        Number.parseInt(maxSyllables),
+    console.log({vowels, consonants, sounds, count, minSyllables, maxSyllables});
+    const words = generateWords(parseInt(count),
+        parseInt(minSyllables),
+        parseInt(maxSyllables),
         consonants,
         vowels,
         sounds);
+
+    console.log(words);
     words.forEach(element => {
         outputBox.innerHTML += "<p>" + element + "</>";
     });
     return false; // prevent reload
 };
 
+return false;};
+
+
+
+
 function generateWords(count: number, minSyllables: number, maxSyllables: number, consonants: string[], vowels: string[], sounds: string[]): string[] {
     const roots = new Set<string>();
     while (roots.size < count) {
         let currentRoot = "";
         let syllableCount = randomInRange(minSyllables, maxSyllables);
-
         for (let j = 1; j <= syllableCount; j++) {
             if ((j > 1 && j < syllableCount - 1) || (j == syllableCount && syllableCount != 1)) currentRoot += ".";
             else if (j == syllableCount - 1) currentRoot += "'";
+            let syl =generateSyllable(j, consonants, vowels, sounds);
+            console.log(syl);
 
-            currentRoot += generateSyllable(j, consonants, vowels, sounds);
+            currentRoot += syl.replace("undefined","");
         }
+
         roots.add(currentRoot)
     }
     const actualRoots:string[] = [];

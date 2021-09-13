@@ -31,6 +31,8 @@
 
         }
     </style>
+
+    <script src="WordGenerator.js"></script>
 </head>
 
 <body>
@@ -45,7 +47,7 @@
         </div>
     </header>
     <main class="row d-flex justify-content-center">
-        <form  class="col d-flex justify-content-center" d="selection">
+        <form  class="col d-flex justify-content-center" id="selection">
             <div class="col-8">
                 <div class="form-group text-center row">
                     <label for="vowels">Vowels</label>
@@ -107,8 +109,12 @@
                     </select>
                 </div>                 
                 <div class="row form-group py-2">
-                    <label for="word_count">Word Count</label>
+                    <label for="min">Minimum Syllables</label>
+                    <input type="number" value="0" name="min" id="min" >
+                    <label for="max">Maximum Syllables</label>
+                    <input type="number" value="4" name="max" id="max" >
 
+                    <label for="word_count">Word Count</label>
                     <input type="number" value="50" name="word_count" id="word_count" >
                 </div>
 
@@ -119,7 +125,7 @@
             
         </form>
         <div class="col d-flex align-items-stretch justify-content-center text-center">
-            <div class="col-6 border" id="outputBox">aaaa</div></div>
+            <div class="col-6 border overflow-auto" id="outputBox"></div></div>
     </main>
     <footer class="footer">
         <div class=" d-flex row justify-content-center">
